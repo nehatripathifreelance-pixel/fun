@@ -15,6 +15,7 @@ import ReportsPanel from './panels/ReportsPanel';
 import PublicWebsite from './panels/PublicWebsite';
 
 const App: React.FC = () => {
+  console.log("App component rendering...");
   const [activePanel, setActivePanel] = useState<AppPanel>(AppPanel.WEBSITE);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
