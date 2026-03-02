@@ -1,5 +1,5 @@
 {
-  "name": "Copy of Smart Dairy ERP System",
+  "name": "Smart Dairy ERP System",
   "description": "A comprehensive end-to-end digital solution for dairy operations, from farmer collection to customer delivery, featuring real-time tracking, IoT integration, and AI-driven demand forecasting.",
   "requestFramePermissions": [
     "geolocation"
