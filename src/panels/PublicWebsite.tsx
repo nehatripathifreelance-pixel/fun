@@ -6,7 +6,6 @@ interface PublicWebsiteProps {
 }
 
 const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onEnterStore }) => {
-  console.log("PublicWebsite component rendering...");
   return (
     <div className="bg-white -m-4 md:-m-6 p-0 overflow-hidden text-slate-900">
       {/* Hero Section */}
