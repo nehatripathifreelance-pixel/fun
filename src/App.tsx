@@ -1,18 +1,18 @@
 
 import React, { useState, useMemo } from 'react';
-import { AppPanel } from './types';
-import Sidebar from './components/Sidebar';
-import Header from './components/Header';
-import FarmerPanel from './panels/FarmerPanel';
-import BMCPanel from './panels/BMCPanel';
-import TankerPanel from './panels/TankerPanel';
-import FactoryPanel from './panels/FactoryPanel';
-import CNDFPanel from './panels/CNDFPanel';
-import BoothPanel from './panels/BoothPanel';
-import CustomerPanel from './panels/CustomerPanel';
-import AdminDashboard from './panels/AdminDashboard';
-import ReportsPanel from './panels/ReportsPanel';
-import PublicWebsite from './panels/PublicWebsite';
+import { AppPanel } from '@/types';
+import Sidebar from '@/components/sidebar';
+import Header from '@/components/header';
+import FarmerPanel from '@/panels/farmer-panel';
+import BMCPanel from '@/panels/bmc-panel';
+import TankerPanel from '@/panels/tanker-panel';
+import FactoryPanel from '@/panels/factory-panel';
+import CNDFPanel from '@/panels/cndf-panel';
+import BoothPanel from '@/panels/booth-panel';
+import CustomerPanel from '@/panels/customer-panel';
+import AdminDashboard from '@/panels/admin-dashboard';
+import ReportsPanel from '@/panels/reports-panel';
+import PublicWebsite from '@/panels/public-website';
 
 const App: React.FC = () => {
   const [activePanel, setActivePanel] = useState<AppPanel>(AppPanel.WEBSITE);

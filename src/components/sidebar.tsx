@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { AppPanel } from '../types';
+import { AppPanel } from '@/types';
 
 interface SidebarProps {
   activePanel: AppPanel;

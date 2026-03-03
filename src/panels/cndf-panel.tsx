@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { getDemandForecast } from '../services/geminiService';
+import { getDemandForecast } from '@/services/gemini-service';
 
 const CNDFPanel: React.FC = () => {
   const [isForecasting, setIsForecasting] = useState(false);
