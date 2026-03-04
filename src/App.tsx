@@ -13,10 +13,12 @@ import CustomerPanel from '@/panels/customer-panel';
 import AdminDashboard from '@/panels/admin-dashboard';
 import ReportsPanel from '@/panels/reports-panel';
 import PublicWebsite from '@/panels/public-website';
+import Login from '@/components/login';
 
 const App: React.FC = () => {
   const [activePanel, setActivePanel] = useState<AppPanel>(AppPanel.WEBSITE);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
 
   const renderPanel = useMemo(() => {
     switch (activePanel) {
@@ -34,6 +36,15 @@ const App: React.FC = () => {
     }
   }, [activePanel]);
 
+  const handleLogout = () => {
+    setIsAdminAuthenticated(false);
+    setActivePanel(AppPanel.WEBSITE);
+  };
+
+  if ((activePanel === AppPanel.ADMIN || activePanel === AppPanel.REPORTS) && !isAdminAuthenticated) {
+    return <Login onLogin={() => setIsAdminAuthenticated(true)} />;
+  }
+
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50 font-sans">
       <Sidebar 
@@ -41,12 +52,16 @@ const App: React.FC = () => {
         onSelect={setActivePanel} 
         isOpen={isSidebarOpen} 
         onToggle={() => setIsSidebarOpen(!isSidebarOpen)} 
+        isAdminAuthenticated={isAdminAuthenticated}
+        onLogout={handleLogout}
       />
       
       <div className="flex flex-col flex-1 overflow-hidden">
         <Header 
           activePanel={activePanel} 
           isSidebarOpen={isSidebarOpen}
+          isAdminAuthenticated={isAdminAuthenticated}
+          onLogout={handleLogout}
         />
         
         <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50">

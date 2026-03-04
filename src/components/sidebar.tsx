@@ -7,9 +7,11 @@ interface SidebarProps {
   onSelect: (panel: AppPanel) => void;
   isOpen: boolean;
   onToggle: () => void;
+  isAdminAuthenticated: boolean;
+  onLogout: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activePanel, onSelect, isOpen }) => {
+const Sidebar: React.FC<SidebarProps> = ({ activePanel, onSelect, isOpen, isAdminAuthenticated, onLogout }) => {
   const menuItems = [
     { id: AppPanel.WEBSITE, label: 'Public Website', icon: '🌐' },
     { id: AppPanel.ADMIN, label: 'Central Dashboard', icon: '📊' },
@@ -49,7 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePanel, onSelect, isOpen }) => {
         ))}
       </nav>
       
-      <div className="p-4 border-t border-slate-800">
+      <div className="p-4 border-t border-slate-800 space-y-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-sm font-bold overflow-hidden shrink-0">
             <img src="https://picsum.photos/40/40" alt="Avatar" />
@@ -61,6 +63,16 @@ const Sidebar: React.FC<SidebarProps> = ({ activePanel, onSelect, isOpen }) => {
             </div>
           )}
         </div>
+        
+        {isAdminAuthenticated && (
+          <button 
+            onClick={onLogout}
+            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all text-red-400 hover:bg-red-500/10 hover:text-red-300 active:scale-95`}
+          >
+            <span className="text-xl shrink-0">🚪</span>
+            {isOpen && <span className="font-bold text-xs uppercase tracking-widest">Sign Out</span>}
+          </button>
+        )}
       </div>
     </aside>
   );

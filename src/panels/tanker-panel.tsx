@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 
 const TankerPanel: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'map' | 'trips'>('map');
+  const [activeTab, setActiveTab] = useState<'map' | 'trips' | 'arrival'>('map');
   const [tankers, setTankers] = useState([
     { id: 'TKR-5529', driver: 'Rahul S.', status: 'Moving', speed: '45 km/h', temp: '3.8°C', load: '85%', eta: '12m', route: 'BMC East Hub → Central Factory' },
     { id: 'TKR-2101', driver: 'Aman V.', status: 'Idle', speed: '0 km/h', temp: '4.1°C', load: '10%', eta: '-', route: 'Standby at Main Gate' },
@@ -24,6 +24,12 @@ const TankerPanel: React.FC = () => {
             className={`flex-1 md:flex-none px-8 py-3 rounded-xl text-sm font-black transition-all ${activeTab === 'trips' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-500 hover:bg-slate-100'}`}
           >
             📋 Master Trip Logs
+          </button>
+          <button 
+            onClick={() => setActiveTab('arrival')}
+            className={`flex-1 md:flex-none px-8 py-3 rounded-xl text-sm font-black transition-all ${activeTab === 'arrival' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-500 hover:bg-slate-100'}`}
+          >
+            🏁 Arrival Report
           </button>
         </div>
         <div className="flex items-center gap-3 bg-blue-50 px-5 py-3 rounded-2xl border border-blue-100 w-full md:w-auto">
@@ -118,7 +124,7 @@ const TankerPanel: React.FC = () => {
              ))}
           </div>
         </div>
-      ) : (
+      ) : activeTab === 'trips' ? (
         <div className="bg-white rounded-[2rem] border border-slate-200 shadow-xl overflow-hidden animate-fadeIn">
            <div className="p-8 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
               <h3 className="font-black text-slate-800 text-lg">Detailed Trip Analytics</h3>
@@ -162,6 +168,103 @@ const TankerPanel: React.FC = () => {
                  </tbody>
               </table>
            </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 animate-fadeIn">
+          {/* Arrival Logging Form */}
+          <div className="lg:col-span-2 bg-white p-10 rounded-[3.5rem] border border-slate-200 shadow-sm">
+            <div className="flex items-center gap-4 mb-10">
+              <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl shadow-inner">🏁</div>
+              <div>
+                <h3 className="text-3xl font-black text-slate-900 tracking-tight">Tanker Arrival Report</h3>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Log destination arrival & quality check</p>
+              </div>
+            </div>
+
+            <form className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2">Select Tanker / टैंकर चुनें</label>
+                  <select className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-2 border-slate-50 focus:border-blue-500 focus:bg-white focus:outline-none transition-all font-black text-slate-800 shadow-inner appearance-none">
+                    {tankers.map(t => (
+                      <option key={t.id} value={t.id}>{t.id} ({t.driver})</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2">Arrival Destination / आगमन स्थान</label>
+                  <select className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-2 border-slate-50 focus:border-blue-500 focus:bg-white focus:outline-none transition-all font-black text-slate-800 shadow-inner appearance-none">
+                    <option>Main Processing Plant</option>
+                    <option>North Distribution Hub</option>
+                    <option>South Chilling Center</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2">Gross Weight (KG)</label>
+                  <input type="number" placeholder="e.g. 12450" className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-2 border-slate-50 focus:border-blue-500 focus:bg-white focus:outline-none transition-all font-black text-slate-800 shadow-inner" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2">Temperature (°C)</label>
+                  <input type="number" step="0.1" placeholder="e.g. 3.8" className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-2 border-slate-50 focus:border-blue-500 focus:bg-white focus:outline-none transition-all font-black text-slate-800 shadow-inner" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-2">Seal Status</label>
+                  <select className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-2 border-slate-50 focus:border-blue-500 focus:bg-white focus:outline-none transition-all font-black text-slate-800 shadow-inner appearance-none">
+                    <option>Intact / सुरक्षित</option>
+                    <option>Broken / टूटा हुआ</option>
+                    <option>Tampered / छेड़छाड़</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="p-8 bg-blue-50 rounded-[2.5rem] border border-blue-100 space-y-6">
+                <h4 className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Quality Verification (Lab Samples)</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">FAT %</label>
+                    <input type="number" step="0.1" className="w-full px-4 py-3 bg-white rounded-xl border border-blue-200 font-black text-center" />
+                  </div>
+                  <div>
+                    <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">SNF %</label>
+                    <input type="number" step="0.1" className="w-full px-4 py-3 bg-white rounded-xl border border-blue-200 font-black text-center" />
+                  </div>
+                  <div>
+                    <label className="block text-[9px] font-black text-slate-400 uppercase mb-2">CLR</label>
+                    <input type="number" className="w-full px-4 py-3 bg-white rounded-xl border border-blue-200 font-black text-center" />
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" className="w-full py-6 bg-slate-900 hover:bg-slate-800 text-white rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-2xl shadow-slate-200 transition-all active:scale-95">
+                Submit Arrival Report / रिपोर्ट जमा करें
+              </button>
+            </form>
+          </div>
+
+          {/* Recent Arrivals Sidebar */}
+          <div className="space-y-6">
+            <h3 className="font-black text-slate-400 uppercase tracking-widest text-[10px] ml-2">Recent Arrivals</h3>
+            {[
+              { id: 'TKR-4412', time: '10:45 AM', status: 'Verified', weight: '8,240 KG' },
+              { id: 'TKR-8821', time: '09:30 AM', status: 'Pending QC', weight: '12,100 KG' },
+              { id: 'TKR-1109', time: '08:15 AM', status: 'Verified', weight: '4,500 KG' },
+            ].map((arrival, i) => (
+              <div key={i} className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex justify-between items-center">
+                <div>
+                  <h4 className="font-black text-slate-900">{arrival.id}</h4>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase">{arrival.time} • {arrival.weight}</p>
+                </div>
+                <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
+                  arrival.status === 'Verified' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'
+                }`}>
+                  {arrival.status}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
