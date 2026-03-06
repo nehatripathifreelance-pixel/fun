@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import MilkPouringSlip from '../components/MilkPouringSlip';
 import { QRCodeSVG } from 'qrcode.react';
 import { 
   Milk, 
@@ -30,7 +31,7 @@ const FarmerPanel: React.FC = () => {
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [loginMethod, setLoginMethod] = useState<'id' | 'otp'>('id');
   const [activeTab, setActiveTab] = useState<FarmerTab>('home');
-  const [reportView, setReportView] = useState<'daily' | 'weekly' | 'monthly'>('monthly');
+  const [reportView, setReportView] = useState<'daily' | 'weekly' | 'monthly' | 'due' | 'payment'>('monthly');
   const [showQRCode, setShowQRCode] = useState(false);
   const [selectedSlip, setSelectedSlip] = useState<any>(null);
   const [showRateCard, setShowRateCard] = useState(false);
@@ -335,97 +336,17 @@ const FarmerPanel: React.FC = () => {
 
         {/* Milk Slip Modal */}
         {selectedSlip && (
-          <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-            <div className="bg-white w-full max-w-md rounded-[3.5rem] shadow-2xl border border-slate-100 overflow-hidden animate-slideInUp print:shadow-none print:border-none print:rounded-none">
-              <div className="p-10" id="milk-slip-content">
-                <div className="flex justify-between items-start mb-8 print:hidden">
-                  <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">Milk Collection Slip</h3>
-                  <button onClick={() => setSelectedSlip(null)} className="w-10 h-10 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center hover:bg-slate-100 transition-colors">✕</button>
-                </div>
-                
-                <div className="text-center mb-8 border-b border-slate-100 pb-8">
-                  <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg mx-auto mb-4">SD</div>
-                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">SMART DAIRY ENTERPRISE</h2>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Collection Center #12 • North Zone</p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-6 mb-8">
-                  <div>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Farmer Name</p>
-                    <p className="text-sm font-black text-slate-900">Ramesh Chand Chaudhary</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Farmer ID</p>
-                    <p className="text-sm font-black text-slate-900">FRM-782390</p>
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Date & Shift</p>
-                    <p className="text-sm font-black text-slate-900">{selectedSlip.date}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Slip No.</p>
-                    <p className="text-sm font-black text-slate-900">#{Math.floor(Math.random() * 900000) + 100000}</p>
-                  </div>
-                </div>
-
-                <div className="bg-slate-50 rounded-[2rem] p-8 border border-slate-100 mb-8">
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Milk Volume</span>
-                      <span className="text-lg font-black text-slate-900">{selectedSlip.vol} L</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Fat (%)</span>
-                      <span className="text-lg font-black text-slate-900">{selectedSlip.fat}%</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs font-black text-slate-500 uppercase tracking-widest">SNF (%)</span>
-                      <span className="text-lg font-black text-slate-900">{selectedSlip.snf}%</span>
-                    </div>
-                    <div className="pt-4 border-t border-slate-200 flex justify-between items-center">
-                      <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Rate (₹/L)</span>
-                      <span className="text-lg font-black text-blue-600">₹{selectedSlip.rate}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-center mb-8">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Amount Payable</p>
-                  <p className="text-5xl font-black text-slate-900 tracking-tighter">₹{selectedSlip.total}</p>
-                  <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mt-2">Auto-Calculated via ERP v4.0</p>
-                </div>
-
-                <div className="flex gap-4 print:hidden">
-                  <button 
-                    onClick={() => window.print()}
-                    className="flex-1 py-5 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center justify-center gap-2"
-                  >
-                    <span>Print Slip</span>
-                    <span className="text-lg">⎙</span>
-                  </button>
-                  <button 
-                    onClick={() => {
-                      const content = document.getElementById('milk-slip-content')?.innerText;
-                      const blob = new Blob([content || ''], { type: 'text/plain' });
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.href = url;
-                      a.download = `Milk_Slip_${selectedSlip.date.replace(' ', '_')}.txt`;
-                      a.click();
-                    }}
-                    className="flex-1 py-5 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center justify-center gap-2"
-                  >
-                    <span>Download</span>
-                    <span className="text-lg">↓</span>
-                  </button>
-                </div>
-                
-                <p className="text-[8px] font-black text-slate-300 uppercase tracking-widest text-center mt-8 print:block hidden">
-                  This is a computer generated slip. No signature required.
-                </p>
-              </div>
-            </div>
-          </div>
+          <MilkPouringSlip 
+            farmerName="Ramesh Chand Chaudhary"
+            farmerId="FRM-782390"
+            date={selectedSlip.date.split(' ')[0] + ' ' + selectedSlip.date.split(' ')[1]}
+            time={selectedSlip.date.split(' ').slice(2).join(' ') || "07:30 AM"}
+            quantity={parseFloat(selectedSlip.vol)}
+            fat={parseFloat(selectedSlip.fat)}
+            snf={parseFloat(selectedSlip.snf)}
+            amount={parseFloat(selectedSlip.total)}
+            onClose={() => setSelectedSlip(null)}
+          />
         )}
         <div className="flex items-center gap-4">
            <button 
@@ -746,30 +667,32 @@ const FarmerPanel: React.FC = () => {
                            </div>
                         </div>
                      </div>
-                     <button 
-                      onClick={handleSubmitMilk}
-                      disabled={isSubmitting || !milkVolume}
-                      className="w-full mt-10 py-6 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 text-white rounded-[1.75rem] font-black text-sm uppercase tracking-widest transition-all shadow-xl shadow-blue-500/20 active:scale-95 relative z-10 flex items-center justify-center gap-3"
-                    >
-                      {isSubmitting ? (
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      ) : showSuccess ? (
-                        <div className="flex flex-col items-center gap-2">
-                          <span>Success / सफल ✅</span>
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              alert('Downloading Collection Slip...');
-                            }}
-                            className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
-                          >
-                            Print Slip / रसीद प्रिंट करें
-                          </button>
-                        </div>
-                      ) : (
-                        <>Submit Collection / जमा करें</>
-                      )}
-                    </button>
+                     {showSuccess ? (
+                       <div className="w-full mt-10 py-6 bg-blue-600 text-white rounded-[1.75rem] font-black text-sm uppercase tracking-widest transition-all shadow-xl shadow-blue-500/20 relative z-10 flex flex-col items-center gap-2">
+                         <span>Success / सफल ✅</span>
+                         <button 
+                           onClick={(e) => {
+                             e.stopPropagation();
+                             alert('Downloading Collection Slip...');
+                           }}
+                           className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+                         >
+                           Print Slip / रसीद प्रिंट करें
+                         </button>
+                       </div>
+                     ) : (
+                       <button 
+                        onClick={handleSubmitMilk}
+                        disabled={isSubmitting || !milkVolume}
+                        className="w-full mt-10 py-6 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 text-white rounded-[1.75rem] font-black text-sm uppercase tracking-widest transition-all shadow-xl shadow-blue-500/20 active:scale-95 relative z-10 flex items-center justify-center gap-3"
+                      >
+                        {isSubmitting ? (
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        ) : (
+                          <>Submit Collection / जमा करें</>
+                        )}
+                      </button>
+                     )}
                   </div>
                 </div>
               </div>
@@ -877,10 +800,67 @@ const FarmerPanel: React.FC = () => {
                         >
                           Monthly
                         </button>
+                        <button 
+                          onClick={() => setReportView('due')}
+                          className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${reportView === 'due' ? 'bg-slate-900 text-white shadow-lg' : 'bg-slate-100 text-slate-400'}`}
+                        >
+                          Due Report
+                        </button>
+                        <button 
+                          onClick={() => setReportView('payment')}
+                          className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${reportView === 'payment' ? 'bg-slate-900 text-white shadow-lg' : 'bg-slate-100 text-slate-400'}`}
+                        >
+                          Payment Report
+                        </button>
                       </div>
                    </h4>
                    <div className="space-y-6">
-                      {(reportView === 'daily' ? [
+                      {reportView === 'due' ? (
+                        <div className="p-8 bg-orange-50 rounded-[2.5rem] border border-orange-100">
+                           <div className="flex justify-between items-start mb-8">
+                              <div>
+                                 <h5 className="text-2xl font-black text-orange-900">₹5,670.40</h5>
+                                 <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mt-1">Current Outstanding Due / वर्तमान बकाया</p>
+                              </div>
+                              <div className="px-4 py-2 bg-white rounded-xl text-[9px] font-black text-orange-600 uppercase tracking-widest shadow-sm border border-orange-100">Cycle: Oct 01-08</div>
+                           </div>
+                           <div className="space-y-4">
+                              <div className="flex justify-between items-center p-4 bg-white/60 rounded-2xl">
+                                 <span className="text-xs font-bold text-slate-600">Total Milk Supplied</span>
+                                 <span className="text-sm font-black text-slate-900">142.5 L</span>
+                              </div>
+                              <div className="flex justify-between items-center p-4 bg-white/60 rounded-2xl">
+                                 <span className="text-xs font-bold text-slate-600">Gross Amount</span>
+                                 <span className="text-sm font-black text-slate-900">₹6,120.40</span>
+                              </div>
+                              <div className="flex justify-between items-center p-4 bg-white/60 rounded-2xl">
+                                 <span className="text-xs font-bold text-slate-600">Deductions (Feed/Advance)</span>
+                                 <span className="text-sm font-black text-red-600">-₹450.00</span>
+                               </div>
+                           </div>
+                           <button className="w-full mt-8 py-5 bg-orange-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-orange-200">Request Early Settlement</button>
+                        </div>
+                      ) : reportView === 'payment' ? (
+                        <div className="space-y-4">
+                           {[
+                             { id: 'PAY-8821', date: '08 Oct 2024', amt: '₹4,280.50', method: 'Bank Transfer', status: 'Success' },
+                             { id: 'PAY-8712', date: '01 Oct 2024', amt: '₹4,112.20', method: 'Bank Transfer', status: 'Success' },
+                             { id: 'PAY-8605', date: '24 Sep 2024', amt: '₹3,980.00', method: 'UPI', status: 'Success' },
+                           ].map((pay, i) => (
+                             <div key={i} className="p-6 bg-slate-50 rounded-3xl border border-slate-100 flex justify-between items-center">
+                                <div>
+                                   <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{pay.id}</p>
+                                   <p className="text-sm font-black text-slate-800">{pay.date}</p>
+                                   <p className="text-[10px] font-bold text-slate-500 uppercase mt-1">{pay.method}</p>
+                                </div>
+                                <div className="text-right">
+                                   <p className="text-xl font-black text-slate-900">{pay.amt}</p>
+                                   <span className="px-2 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[8px] font-black uppercase tracking-widest">{pay.status}</span>
+                                </div>
+                             </div>
+                           ))}
+                        </div>
+                      ) : (reportView === 'daily' ? [
                         { date: 'Oct 08 AM', fat: '4.2', snf: '8.8', rate: '41.50', vol: '12.4', total: '514.60' },
                         { date: 'Oct 08 PM', fat: '4.3', snf: '8.9', rate: '42.10', vol: '11.2', total: '471.52' },
                       ] : reportView === 'weekly' ? [

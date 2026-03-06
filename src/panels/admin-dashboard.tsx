@@ -1,9 +1,24 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   BarChart, Bar, Legend, RadialBarChart, RadialBar 
 } from 'recharts';
+import { Plus, Trash2, MapPin, User, Database, Building2, Layout, BarChart3, Users, Store, Truck, Download, FileText, Printer } from 'lucide-react';
+import WebsiteCMS from './website-cms';
+import FarmerOperations from './farmer-operations';
+import BoothMonitoring from './booth-monitoring';
+import CustomerInsights from './customer-insights';
+import LogisticsFactory from './logistics-factory';
+
+interface BMC {
+  id: string;
+  name: string;
+  location: string;
+  capacity: string;
+  manager: string;
+  status: 'Active' | 'Inactive';
+}
 
 const data = [
   { name: 'Mon', collection: 4000, sales: 2400, quality: 85 },
@@ -23,10 +38,117 @@ const efficiencyData = [
 ];
 
 const AdminDashboard: React.FC = () => {
+  const [activeMainTab, setActiveMainTab] = useState<'overview' | 'cms' | 'farmers' | 'booths' | 'customers' | 'logistics'>('overview');
+  const [bmcCenters, setBmcCenters] = useState<BMC[]>([
+    { id: '1', name: 'North Valley BMC', location: 'Shimla Sector 4', capacity: '5000L', manager: 'Rajesh Kumar', status: 'Active' },
+    { id: '2', name: 'Green Pastures BMC', location: 'Solan Highway', capacity: '3500L', manager: 'Anita Sharma', status: 'Active' },
+    { id: '3', name: 'Hilltop Collection', location: 'Kufri Road', capacity: '2000L', manager: 'Suresh Singh', status: 'Inactive' },
+  ]);
+
+  const [newBmc, setNewBmc] = useState({
+    name: '',
+    location: '',
+    capacity: '',
+    manager: ''
+  });
+
+  const [showAddForm, setShowAddForm] = useState(false);
+
+  const handleAddBmc = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newBmc.name || !newBmc.location) return;
+
+    const bmc: BMC = {
+      id: Math.random().toString(36).substr(2, 9),
+      ...newBmc,
+      status: 'Active'
+    };
+
+    setBmcCenters([...bmcCenters, bmc]);
+    setNewBmc({ name: '', location: '', capacity: '', manager: '' });
+    setShowAddForm(false);
+  };
+
+  const removeBmc = (id: string) => {
+    setBmcCenters(bmcCenters.filter(b => b.id !== id));
+  };
+
   return (
     <div className="space-y-8 pb-12">
-      {/* Dynamic AI Status Header */}
-      <div className="bg-white p-8 rounded-[3rem] border border-slate-200 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden group">
+      {/* Main Tab Switcher */}
+      <div className="flex gap-4 p-2 bg-slate-100 rounded-[2rem] w-fit mb-4">
+        <button
+          onClick={() => setActiveMainTab('overview')}
+          className={`flex items-center gap-3 px-8 py-3.5 rounded-[1.5rem] text-sm font-black uppercase tracking-widest transition-all ${
+            activeMainTab === 'overview' 
+              ? 'bg-white text-slate-900 shadow-xl shadow-slate-200/50 scale-105' 
+              : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'
+          }`}
+        >
+          <BarChart3 size={18} />
+          Enterprise Overview
+        </button>
+        <button
+          onClick={() => setActiveMainTab('cms')}
+          className={`flex items-center gap-3 px-8 py-3.5 rounded-[1.5rem] text-sm font-black uppercase tracking-widest transition-all ${
+            activeMainTab === 'cms' 
+              ? 'bg-white text-slate-900 shadow-xl shadow-slate-200/50 scale-105' 
+              : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'
+          }`}
+        >
+          <Layout size={18} />
+          Website CMS
+        </button>
+        <button
+          onClick={() => setActiveMainTab('farmers')}
+          className={`flex items-center gap-3 px-8 py-3.5 rounded-[1.5rem] text-sm font-black uppercase tracking-widest transition-all ${
+            activeMainTab === 'farmers' 
+              ? 'bg-white text-slate-900 shadow-xl shadow-slate-200/50 scale-105' 
+              : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'
+          }`}
+        >
+          <Users size={18} />
+          Farmer Operations
+        </button>
+        <button
+          onClick={() => setActiveMainTab('booths')}
+          className={`flex items-center gap-3 px-8 py-3.5 rounded-[1.5rem] text-sm font-black uppercase tracking-widest transition-all ${
+            activeMainTab === 'booths' 
+              ? 'bg-white text-slate-900 shadow-xl shadow-slate-200/50 scale-105' 
+              : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'
+          }`}
+        >
+          <Store size={18} />
+          Booth Monitoring
+        </button>
+        <button
+          onClick={() => setActiveMainTab('customers')}
+          className={`flex items-center gap-3 px-8 py-3.5 rounded-[1.5rem] text-sm font-black uppercase tracking-widest transition-all ${
+            activeMainTab === 'customers' 
+              ? 'bg-white text-slate-900 shadow-xl shadow-slate-200/50 scale-105' 
+              : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'
+          }`}
+        >
+          <User size={18} />
+          Customer Insights
+        </button>
+        <button
+          onClick={() => setActiveMainTab('logistics')}
+          className={`flex items-center gap-3 px-8 py-3.5 rounded-[1.5rem] text-sm font-black uppercase tracking-widest transition-all ${
+            activeMainTab === 'logistics' 
+              ? 'bg-white text-slate-900 shadow-xl shadow-slate-200/50 scale-105' 
+              : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'
+          }`}
+        >
+          <Truck size={18} />
+          Logistics & Factory
+        </button>
+      </div>
+
+      {activeMainTab === 'overview' ? (
+        <div className="space-y-8 animate-in fade-in duration-700">
+          {/* Dynamic AI Status Header */}
+          <div className="bg-white p-8 rounded-[3rem] border border-slate-200 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-50 rounded-full blur-3xl -mr-20 -mt-20 opacity-50 group-hover:scale-110 transition-transform duration-1000"></div>
         <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
           <div className="w-24 h-24 bg-slate-900 rounded-[2rem] flex items-center justify-center text-5xl shadow-2xl shadow-slate-900/20 transform -rotate-3 group-hover:rotate-0 transition-transform">
@@ -40,14 +162,29 @@ const AdminDashboard: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="flex gap-4 relative z-10 w-full lg:w-auto">
-          <div className="flex-1 lg:flex-none p-5 bg-slate-50 rounded-3xl border border-slate-100 text-center">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Server Latency</p>
-            <p className="text-xl font-black text-slate-800">42ms</p>
-          </div>
-          <div className="flex-1 lg:flex-none p-5 bg-slate-50 rounded-3xl border border-slate-100 text-center">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Active Nodes</p>
-            <p className="text-xl font-black text-slate-800">124</p>
+        <div className="flex flex-wrap gap-3 relative z-10 w-full lg:w-auto">
+          <button 
+            onClick={() => window.print()}
+            className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all"
+          >
+            <Printer size={14} />
+            Print
+          </button>
+          <button 
+            className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all"
+          >
+            <FileText size={14} />
+            Export PDF
+          </button>
+          <div className="flex gap-4">
+            <div className="flex-1 lg:flex-none p-5 bg-slate-50 rounded-3xl border border-slate-100 text-center">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Server Latency</p>
+              <p className="text-xl font-black text-slate-800">42ms</p>
+            </div>
+            <div className="flex-1 lg:flex-none p-5 bg-slate-50 rounded-3xl border border-slate-100 text-center">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Active Nodes</p>
+              <p className="text-xl font-black text-slate-800">124</p>
+            </div>
           </div>
         </div>
       </div>
@@ -126,6 +263,168 @@ const AdminDashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* BMC Management Section */}
+      <div className="bg-white p-10 rounded-[3rem] border border-slate-200 shadow-sm">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+          <div>
+            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Network Infrastructure</h3>
+            <h2 className="text-2xl font-black text-slate-900 tracking-tight">BMC Center Management</h2>
+          </div>
+          <button 
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20"
+          >
+            <Plus size={20} />
+            Add New Center
+          </button>
+        </div>
+
+        {showAddForm && (
+          <div className="mb-10 p-8 bg-slate-50 rounded-[2rem] border border-slate-100 animate-in fade-in slide-in-from-top-4 duration-500">
+            <form onSubmit={handleAddBmc} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Center Name</label>
+                <div className="relative">
+                  <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                  <input 
+                    type="text" 
+                    placeholder="e.g. North Valley BMC"
+                    className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold text-slate-700"
+                    value={newBmc.name}
+                    onChange={e => setNewBmc({...newBmc, name: e.target.value})}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Location</label>
+                <div className="relative">
+                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                  <input 
+                    type="text" 
+                    placeholder="e.g. Shimla Sector 4"
+                    className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold text-slate-700"
+                    value={newBmc.location}
+                    onChange={e => setNewBmc({...newBmc, location: e.target.value})}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Daily Capacity</label>
+                <div className="relative">
+                  <Database className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                  <input 
+                    type="text" 
+                    placeholder="e.g. 5000L"
+                    className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold text-slate-700"
+                    value={newBmc.capacity}
+                    onChange={e => setNewBmc({...newBmc, capacity: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Manager Name</label>
+                <div className="relative">
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                  <input 
+                    type="text" 
+                    placeholder="e.g. Rajesh Kumar"
+                    className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold text-slate-700"
+                    value={newBmc.manager}
+                    onChange={e => setNewBmc({...newBmc, manager: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="md:col-span-2 lg:col-span-4 flex justify-end gap-4 mt-4">
+                <button 
+                  type="button"
+                  onClick={() => setShowAddForm(false)}
+                  className="px-8 py-3 bg-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-300 transition-all"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  className="px-10 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/10"
+                >
+                  Confirm & Add Center
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {bmcCenters.map((bmc) => (
+            <div key={bmc.id} className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 group hover:bg-white hover:shadow-xl transition-all duration-500">
+              <div className="flex justify-between items-start mb-6">
+                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-xl shadow-sm group-hover:bg-blue-600 group-hover:text-white transition-all duration-500">
+                  🏢
+                </div>
+                <div className="flex gap-2">
+                  <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${
+                    bmc.status === 'Active' ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'
+                  }`}>
+                    {bmc.status}
+                  </span>
+                  <button 
+                    onClick={() => removeBmc(bmc.id)}
+                    className="p-2 text-slate-300 hover:text-red-500 transition-colors"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+              
+              <h4 className="text-lg font-black text-slate-800 mb-4">{bmc.name}</h4>
+              
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 text-slate-500">
+                  <MapPin size={14} className="text-blue-500" />
+                  <span className="text-xs font-bold">{bmc.location}</span>
+                </div>
+                <div className="flex items-center gap-3 text-slate-500">
+                  <Database size={14} className="text-indigo-500" />
+                  <span className="text-xs font-bold">Capacity: {bmc.capacity}</span>
+                </div>
+                <div className="flex items-center gap-3 text-slate-500">
+                  <User size={14} className="text-emerald-500" />
+                  <span className="text-xs font-bold">Manager: {bmc.manager}</span>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-slate-200/50 flex justify-between items-center">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Last Sync: 2m ago</span>
+                <button className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline">View Details →</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+      ) : activeMainTab === 'cms' ? (
+        <div className="animate-in fade-in duration-700">
+          <WebsiteCMS />
+        </div>
+      ) : activeMainTab === 'farmers' ? (
+        <div className="animate-in fade-in duration-700">
+          <FarmerOperations />
+        </div>
+      ) : activeMainTab === 'booths' ? (
+        <div className="animate-in fade-in duration-700">
+          <BoothMonitoring />
+        </div>
+      ) : activeMainTab === 'customers' ? (
+        <div className="animate-in fade-in duration-700">
+          <CustomerInsights />
+        </div>
+      ) : (
+        <div className="animate-in fade-in duration-700">
+          <LogisticsFactory />
+        </div>
+      )}
     </div>
   );
 };

@@ -74,10 +74,10 @@ const PublicWebsite: React.FC<PublicWebsiteProps> = ({ onEnterStore }) => {
         
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
            {[
-             { name: 'Cow Milk', price: '₹65', img: 'https://picsum.photos/400/400?milk' },
-             { name: 'Fresh Ghee', price: '₹650', img: 'https://picsum.photos/400/400?ghee' },
-             { name: 'Soft Paneer', price: '₹120', img: 'https://picsum.photos/400/400?paneer' },
-             { name: 'Thick Curd', price: '₹45', img: 'https://picsum.photos/400/400?curd' },
+             { name: 'Cow Milk', price: '₹65', img: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&q=80&w=400' },
+             { name: 'Fresh Ghee', price: '₹650', img: 'https://images.unsplash.com/photo-1589927986089-35812388d1f4?auto=format&fit=crop&q=80&w=400' },
+             { name: 'Soft Paneer', price: '₹120', img: 'https://images.unsplash.com/photo-1628191010210-a59de33e5941?auto=format&fit=crop&q=80&w=400' },
+             { name: 'Thick Curd', price: '₹45', img: 'https://images.unsplash.com/photo-1485921325833-c519f76c4927?auto=format&fit=crop&q=80&w=400' },
            ].map((p, i) => (
              <div key={i} className="group cursor-pointer">
                 <div className="h-64 rounded-3xl overflow-hidden mb-4 relative">
